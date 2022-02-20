@@ -4,20 +4,35 @@ using UnityEngine;
 
 public class Delivery : MonoBehaviour
 {
-    // Start is called before the first frame update
+    bool hasPackage;
+    [SerializeField] Color32 hasPackageColor = new Color32(1, 1, 1, 1);
+    [SerializeField] Color32 regularColor = new Color32(1, 255, 255, 1);
+    [SerializeField] float delay;
+    SpriteRenderer spriteRenderer;
+
+    void Start()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.color = regularColor;
+    }
+
     void OnCollisionEnter2D(Collision2D other)
     {
-        Debug.Log("Ouch!");
     }
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Package")
+        if (other.tag == "Package" && !hasPackage)
         {
             Debug.Log("Package picked up");
+            hasPackage = true;
+            spriteRenderer.color = hasPackageColor;
+            Destroy(other.gameObject, delay);
         }
-        if (other.tag == "DeliveryLocation")
+        if (other.tag == "DeliveryLocation" && hasPackage)
         {
             Debug.Log("Package Delivered");
+            hasPackage = false;
+            spriteRenderer.color = regularColor;
         }
     }
 }
